@@ -51,7 +51,7 @@ export default function LoginPage() {
                        
 
                         <p className="text">
-                            Не имеете аккаунт? <NavLink to="/registration">Регистрация</NavLink>
+                            Нет аккаунта? <NavLink to="/registration">Регистрация</NavLink>
                         </p>
                     </form>
                 </div>
