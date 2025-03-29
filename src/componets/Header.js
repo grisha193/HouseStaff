@@ -45,7 +45,7 @@ export default function Header(props) {
      
         <li>
         <NavLink 
-        to="/registration">Регистрация </NavLink> </li> 
+        to="/login">Вход </NavLink> </li> 
         </ul>
        
         <FaShoppingCart  onClick={()=> setCartOpen(cartOpen = !cartOpen)} className={`shop-cart-button ${cartOpen && 'active'}`}/>
