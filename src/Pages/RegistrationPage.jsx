@@ -89,12 +89,12 @@ export default function RegistrationPage() {
 
                         <NavLink to="/">
                             <button type="submit" className="btn" disabled={!isFormValid}>
-                                Вход 
+                                Регистрация 
                             </button>
                         </NavLink>
 
                         <p className="text">
-                            Уже имеете аккаунт? <NavLink to="/login">Авторизация</NavLink>
+                            У вас уже есть аккаунт? <NavLink to="/login">Авторизация</NavLink>
                         </p>
                     </form>
                 </div>
