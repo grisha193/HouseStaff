@@ -8,8 +8,9 @@ export default function RegistrationPage() {
     const [nameOfUser, setNameOfUser] = useState('');
     const [secondName, setSecondName] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
+    const [email, setEmail] = useState('');
 
-    const isFormValid = login.trim() !== '' && password.trim() !== '' && lastName.trim() !== '' && nameOfUser.trim() !== '' && secondName.trim() !== '' && phoneNumber.trim() !== '';
+    const isFormValid = login.trim() !== '' && password.trim() !== '' && lastName.trim() !== '' && nameOfUser.trim() !== '' && secondName.trim() !== '' && phoneNumber.trim() !== ''  && email.trim() !== '';
 
     useEffect(() => {
         const labels = document.querySelectorAll('.form-control label');
@@ -85,6 +86,15 @@ export default function RegistrationPage() {
                                 required 
                             />
                             <label>Номер телефона</label>
+                        </div>
+                        <div className="form-control">
+                            <input 
+                                type="text" 
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required 
+                            />
+                            <label>Почта</label>
                         </div>
 
                         <NavLink to="/">
