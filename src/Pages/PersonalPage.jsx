@@ -1,6 +1,7 @@
 import React from 'react'
 import Header from "../componets/Header";
 import { useState } from 'react';
+import Footer from '../componets/Footer';
 export default function PersonalPage() {
     const [email, setEmail] = useState("info@mail.ru");
     const [subscribedNews, setSubscribedNews] = useState(true);
@@ -74,6 +75,8 @@ export default function PersonalPage() {
 
             </div>
         </div>
+
+        <Footer/>
         </div>
     );
 }
