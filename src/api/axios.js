@@ -1,19 +1,19 @@
-<<<<<<< HEAD
-import axios from 'axios'
-
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  withCredentials: true
-})
-
-export default api
-=======
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api', // Laravel API
-  withCredentials: true, // для работы с куками (если Sanctum)
+    baseURL: 'http://localhost:8000',
+    withCredentials: true, // для кук и CSRF
+});
+
+// Правильный перехватчик для CSRF
+api.interceptors.request.use(async (config) => {
+    // Добавляем CSRF-токен только для изменяющих методов
+    if (['post', 'put', 'patch', 'delete'].includes(config.method.toLowerCase())) {
+        await axios.get('http://localhost:8000/sanctum/csrf-cookie', {
+            withCredentials: true
+        });
+    }
+    return config;
 });
 
 export default api;
->>>>>>> 1c7155f2d730741c202de2051430a13699d2c8bf

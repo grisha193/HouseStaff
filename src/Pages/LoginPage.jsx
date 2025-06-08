@@ -1,33 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState } from 'react';
+import { useNavigate, NavLink } from 'react-router-dom';
+import { useAuth } from '../auth/authContext';
+import axios from '../api/axios';
 
-export default function LoginPage({ onLogin }) {
+export default function LoginPage() {
     const [formData, setFormData] = useState({
         login: '',
         password: ''
     });
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+    
+    const auth = useAuth();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        // Анимация для label
-        const labels = document.querySelectorAll('.form-control label');
-        labels.forEach(label => {
-            label.innerHTML = label.innerText
-                .split('')
-                .map((letter, idx) => `<span style="transition-delay:${idx * 50}ms">${letter}</span>`)
-                .join('');
-        });
-    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        setFormData(prev => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = async (e) => {
@@ -36,41 +25,71 @@ export default function LoginPage({ onLogin }) {
         setErrors({});
 
         try {
-            const response = await axios.post('/api/login', {
-                login: formData.login,
-                password: formData.password
+            // 1. Получаем CSRF-куки
+            await axios.get('/sanctum/csrf-cookie', {
+                withCredentials: true,
             });
 
-            // Вызываем функцию onLogin из пропсов с данными пользователя
-            onLogin(response.data.user, response.data.token);
-            
-            // Перенаправляем на главную страницу после успешного входа
-            navigate('/');
-        } catch (error) {
-            if (error.response && error.response.status === 422) {
-                // Обработка ошибок валидации
-                setErrors(error.response.data.errors);
-            } else if (error.response && error.response.status === 401) {
-                // Неправильные учетные данные
-                setErrors({ general: 'Неверный логин или пароль' });
-            } else {
-                console.error('Login error:', error);
-                setErrors({ general: 'Произошла ошибка при входе. Пожалуйста, попробуйте позже.' });
+            // 2. Отправляем запрос на вход
+            const response = await axios.post(
+                '/api/login',
+                {
+                    login: formData.login,
+                    password: formData.password
+                },
+                {
+                    withCredentials: true,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                }
+            );
+
+            // 3. Проверяем ответ сервера
+            if (!response.data?.token) {
+                throw new Error('Server returned invalid data');
             }
+
+            // 4. Вызываем auth.login
+            await auth.login(
+                {
+                    id: response.data.user?.id,
+                    login: formData.login,
+                    ...response.data.user
+                },
+                response.data.token
+            );
+
+        } catch (error) {
+            console.error('Login error:', {
+                error: error.message,
+                response: error.response?.data
+            });
+            
+            setErrors({ 
+                general: error.response?.data?.message || 
+                        error.response?.data?.error || 
+                        'Неверный логин или пароль'
+            });
         } finally {
             setIsSubmitting(false);
         }
     };
-
-    const isFormValid = formData.login.trim() !== '' && formData.password.trim() !== '';
 
     return (
         <div className="wrapper">
             <div className="center">
                 <div className="container">
                     <h1>Авторизация</h1>
-                    {errors.general && <div className="error-message">{errors.general}</div>}
                     
+                    {errors.general && (
+                        <div className="error-message">
+                            {errors.general}
+                        </div>
+                    )}
+
                     <form onSubmit={handleSubmit}>
                         <div className="form-control">
                             <input 
@@ -79,9 +98,9 @@ export default function LoginPage({ onLogin }) {
                                 value={formData.login}
                                 onChange={handleChange}
                                 required 
+                                disabled={isSubmitting}
                             />
                             <label>Логин</label>
-                            {errors.login && <span className="error-text">{errors.login[0]}</span>}
                         </div>
 
                         <div className="form-control">
@@ -91,26 +110,25 @@ export default function LoginPage({ onLogin }) {
                                 value={formData.password}
                                 onChange={handleChange}
                                 required 
+                                disabled={isSubmitting}
                             />
                             <label>Пароль</label>
-                            {errors.password && <span className="error-text">{errors.password[0]}</span>}
                         </div>
 
                         <button 
                             type="submit" 
                             className="btn" 
-                            disabled={!isFormValid || isSubmitting}
+                            disabled={isSubmitting}
                         >
                             {isSubmitting ? 'Вход...' : 'Вход'}
                         </button>
-
-                        <p className="text">
-                            Нет аккаунта? <NavLink to="/registration">Регистрация</NavLink>
-                        </p>
                     </form>
+                    
+                    <p className="text">
+                        Нет аккаунта? <NavLink to="/registration">Регистрация</NavLink>
+                    </p>
                 </div>
             </div>
-
         </div>
     );
 }

@@ -1,21 +1,20 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-
-import axios from 'axios';
+import api from '../api/axios'; // Импортируем настроенный axios-клиент
 
 export default function RegistrationPage() {
     const [formData, setFormData] = useState({
         login: '',
         password: '',
-        lastName: '',
         name: '',
-        secondName: '',
-        phoneNumber: '',
+        surname: '',
+        second_name: '',
+        phone_number: '',
         email: ''
     });
+
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
-
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -32,24 +31,28 @@ export default function RegistrationPage() {
         setErrors({});
 
         try {
-            const response = await axios.post('/api/register', {
+            // Отправка данных через наш api-клиент
+            const response = await api.post('/api/register', {
                 login: formData.login,
                 password: formData.password,
-                last_name: formData.lastName,
                 name: formData.name,
-                second_name: formData.secondName,
-                phone_number: formData.phoneNumber,
+                surname: formData.surname,
+                second_name: formData.second_name,
+                phone_number: formData.phone_number,
                 email: formData.email
             });
 
-            console.log('Registration successful:', response.data);
-            navigate('/login'); // Перенаправляем на страницу входа после успешной регистрации
+            console.log('Успешная регистрация:', response.data);
+            navigate('/login');
         } catch (error) {
-            if (error.response && error.response.status === 422) {
+            if (error.response?.status === 422) {
                 setErrors(error.response.data.errors);
             } else {
-                console.error('Registration error:', error);
-                setErrors({ general: 'Произошла ошибка при регистрации. Пожалуйста, попробуйте позже.' });
+                console.error('Ошибка регистрации:', error);
+                setErrors({ 
+                    general: error.response?.data?.message || 
+                    'Произошла ошибка при регистрации. Пожалуйста, попробуйте позже.' 
+                });
             }
         } finally {
             setIsSubmitting(false);
@@ -93,18 +96,6 @@ export default function RegistrationPage() {
                         <div className="form-control">
                             <input 
                                 type="text" 
-                                name="lastName"
-                                value={formData.lastName}
-                                onChange={handleChange}
-                                required 
-                            />
-                            <label>Фамилия</label>
-                            {errors.last_name && <span className="error-text">{errors.last_name[0]}</span>}
-                        </div>
-                         
-                        <div className="form-control">
-                            <input 
-                                type="text" 
                                 name="name"
                                 value={formData.name}
                                 onChange={handleChange}
@@ -113,30 +104,42 @@ export default function RegistrationPage() {
                             <label>Имя</label>
                             {errors.name && <span className="error-text">{errors.name[0]}</span>}
                         </div>
-                         
+
                         <div className="form-control">
                             <input 
                                 type="text" 
-                                name="secondName"
-                                value={formData.secondName}
+                                name="surname"
+                                value={formData.surname}
+                                onChange={handleChange}
+                                required 
+                            />
+                            <label>Фамилия</label>
+                            {errors.surname && <span className="error-text">{errors.surname[0]}</span>}
+                        </div>
+
+                        <div className="form-control">
+                            <input 
+                                type="text" 
+                                name="second_name"
+                                value={formData.second_name}
                                 onChange={handleChange}
                             />
                             <label>Отчество</label>
                             {errors.second_name && <span className="error-text">{errors.second_name[0]}</span>}
                         </div>
-                         
+
                         <div className="form-control">
                             <input 
                                 type="text" 
-                                name="phoneNumber"
-                                value={formData.phoneNumber}
+                                name="phone_number"
+                                value={formData.phone_number}
                                 onChange={handleChange}
                                 required 
                             />
-                            <label>Номер телефона</label>
+                            <label>Телефон</label>
                             {errors.phone_number && <span className="error-text">{errors.phone_number[0]}</span>}
                         </div>
-                        
+
                         <div className="form-control">
                             <input 
                                 type="email" 
@@ -145,7 +148,7 @@ export default function RegistrationPage() {
                                 onChange={handleChange}
                                 required 
                             />
-                            <label>Почта</label>
+                            <label>Email</label>
                             {errors.email && <span className="error-text">{errors.email[0]}</span>}
                         </div>
 
@@ -154,16 +157,15 @@ export default function RegistrationPage() {
                             className="btn" 
                             disabled={!isFormValid || isSubmitting}
                         >
-                            {isSubmitting ? 'Регистрация...' : 'Регистрация'}
+                            {isSubmitting ? 'Регистрация...' : 'Зарегистрироваться'}
                         </button>
 
                         <p className="text">
-                            У вас уже есть аккаунт? <NavLink to="/login">Авторизация</NavLink>
+                            Уже есть аккаунт? <NavLink to="/login">Войти</NavLink>
                         </p>
                     </form>
                 </div>
             </div>
-
         </div>
     );
 }

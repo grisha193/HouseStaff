@@ -12,11 +12,8 @@ a{
 }
 
 body{
-      background: linear-gradient(to bottom, #FFFFFF 0%, #ACACAC 91%, #ACACAC 100%);
+      background: linear-gradient(to bottom, #FFFFFF 0%, #ACACAC 91%, #ACACAC 100%) no-repeat;
   /* Для поддержки в разных браузерах можно добавить префиксные версии */
-  background: -webkit-linear-gradient(top, #FFFFFF 0%, #ACACAC 91%, #ACACAC 100%);
-  background: -moz-linear-gradient(top, #FFFFFF 0%, #ACACAC 91%, #ACACAC 100%);
-  background: -o-linear-gradient(top, #FFFFFF 0%, #ACACAC 91%, #ACACAC 100%);
     color: #222;
     font-family: 'Montserrat', 'sans-serif';
     font-weight: 600;
@@ -133,6 +130,40 @@ header .shop-cart .summa{
     color: rgb(202, 14, 14);
 }
 
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.quantity-btn {
+  background: #f0f0f0;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.quantity-btn:hover {
+  background: #ddd;
+}
+
+.quantity-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.quantity {
+  font-weight: bold;
+  min-width: 20px;
+  text-align: center;
+}
 
 
 
