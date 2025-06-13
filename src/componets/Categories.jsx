@@ -8,7 +8,7 @@ export class Categories extends Component {
       isLoading: false,
       error: null
     };
-    this._isMounted = false; // Флаг для проверки монтирования
+    this._isMounted = false;
   }
 
   componentDidMount() {
@@ -21,7 +21,7 @@ export class Categories extends Component {
   }
 
   fetchCategories = () => {
-    if (this.state.isLoading) return; // Защита от повторных запросов
+    if (this.state.isLoading) return;
 
     this.setState({ isLoading: true });
 
@@ -32,8 +32,12 @@ export class Categories extends Component {
       })
       .then((data) => {
         if (this._isMounted) {
+          const transformed = data.map(cat => ({
+            key: cat.key || String(cat.id),
+            name: cat.name
+          }));
           this.setState({
-            categories: [{ key: 'all', name: 'Все' }, ...data],
+            categories: [{ key: 'all', name: 'Все' }, ...transformed],
             isLoading: false
           });
         }
@@ -46,8 +50,15 @@ export class Categories extends Component {
       });
   };
 
+  handleCategoryClick = (key) => {
+    if (this.props.chooseCategories) {
+      this.props.chooseCategories(key);
+    }
+  };
+
   render() {
     const { categories, isLoading, error } = this.state;
+    const activeCategory = this.props.activeCategory || 'all';
 
     if (error) return <div className="error">Ошибка: {error}</div>;
     if (isLoading) return <div className="loading">Загрузка...</div>;
@@ -55,10 +66,10 @@ export class Categories extends Component {
     return (
       <div className="categories">
         {categories.map((el) => (
-          <div 
-            key={el.key} 
-            onClick={() => this.props.chooseCategories(el.key)}
-            className="category-item"
+          <div
+            key={el.key}
+            onClick={() => this.handleCategoryClick(el.key)}
+            className={`category-item ${activeCategory === el.key ? 'active' : ''}`}
           >
             {el.name}
           </div>

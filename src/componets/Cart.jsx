@@ -2,6 +2,8 @@ import React from 'react';
 import { FaTrash, FaMinus, FaPlus } from 'react-icons/fa';
 
 const Cart = ({ item, onDelete, onUpdateQuantity }) => {
+  const totalPrice = parseFloat(item.price) * item.count;
+  
   return (
     <div className='item'>
       <img
@@ -11,7 +13,8 @@ const Cart = ({ item, onDelete, onUpdateQuantity }) => {
       <div className="item-info">
         <h2>{item.name}</h2>
         <p>{item.description}</p>
-        <b>{parseFloat(item.price) * item.count} руб.</b>
+        <b>{totalPrice.toFixed(2)} руб.</b>
+        <small>({item.price} руб. × {item.count} шт.)</small>
       </div>
       
       <div className="quantity-controls">

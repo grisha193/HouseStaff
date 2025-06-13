@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { FaShoppingCart } from "react-icons/fa";
 import Cart from './Cart';
 import { NavLink, Outlet } from "react-router-dom";
+import Order from './Order';
 
 const showOrders = (props) => {
-  let summa = 0
-  props.orders.forEach(el => summa += Number.parseFloat(el.price) * el.count)
+  let summa = 0;
+  props.orders.forEach(el => summa += Number.parseFloat(el.price) * el.count);
   
   return (
     <div>
@@ -18,21 +19,40 @@ const showOrders = (props) => {
         />
       ))}
       <p className='summa'>Сумма: {new Intl.NumberFormat().format(summa)} руб.</p>
+      
+      {/* Показываем форму заказа если есть товары и пользователь авторизован */}
+      {props.orders.length > 0 && props.userId && (
+        <Order 
+          userId={props.userId}
+          cartItems={props.orders}
+          onOrderCreated={props.onOrderCreated}
+        />
+      )}
     </div>
-  )
-}
+  );
+};
 
 const showNothing = () => {
   return (
     <div className='empty'>
       <h2>Товаров нет</h2>
     </div>
-  )
-}
+  );
+};
 
 export default function Header(props) {
-  let [cartOpen, setCartOpen] = useState(false)
+  let [cartOpen, setCartOpen] = useState(false);
   
+  const handleOrderCreated = (order) => {
+    // Очищаем корзину после успешного заказа
+    props.orders.forEach(item => {
+      if (item.cartId) {
+        props.onDelete(item.cartId);
+      }
+    });
+    setCartOpen(false);
+  };
+
   return (
     <header>
       <div>
@@ -41,18 +61,9 @@ export default function Header(props) {
         </span>
         
         <ul className='nav'>
-          <li>
-            <NavLink to="/about">Про нас</NavLink>
-          </li>
-          <li>
-            <NavLink to="/contacts">Контакты</NavLink>
-          </li>
-          <li>
-            <NavLink to="/personal">Кабинет</NavLink>
-          </li> 
-          <li>
-            <NavLink to="/login">Вход</NavLink>
-          </li> 
+          <li><NavLink to="/about">Про нас</NavLink></li>
+          <li><NavLink to="/contacts">Контакты</NavLink></li>
+          <li><NavLink to="/profile">Кабинет</NavLink></li>
         </ul>
        
         <FaShoppingCart 
@@ -66,7 +77,9 @@ export default function Header(props) {
               showOrders({
                 orders: props.orders,
                 onDelete: props.onDelete,
-                onUpdateQuantity: props.onUpdateQuantity
+                onUpdateQuantity: props.onUpdateQuantity,
+                userId: props.userId,
+                onOrderCreated: handleOrderCreated
               }) : 
               showNothing()
             }
@@ -76,5 +89,5 @@ export default function Header(props) {
       
       <Outlet />
     </header>
-  )
+  );
 }

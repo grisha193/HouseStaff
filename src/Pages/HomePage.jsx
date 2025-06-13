@@ -4,6 +4,8 @@ import Footer from "../componets/Footer";
 import Items from "../componets/Items";
 import Categories from "../componets/Categories";
 import ShowFullItem from "../componets/ShowFullItem";
+import SearchBar from '../componets/SearchBar';
+
 import { useAuth } from "../auth/authContext";
 
 class App extends React.Component {
@@ -66,7 +68,7 @@ class App extends React.Component {
       });
     }
 
-    updateQuantity = async (cartId, newCount) => {
+  updateQuantity = async (cartId, newCount) => {
     if (newCount < 1) return;
 
     const { userId } = this.state;
@@ -79,7 +81,7 @@ class App extends React.Component {
       }));
 
       if (userId) {
-        const response = await fetch(`http://localhost:8000/api/cart/${cartId}`, {  // Исправлен URL
+        const response = await fetch(`http://localhost:8000/api/cart/${cartId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -104,58 +106,58 @@ class App extends React.Component {
   }
 
   addToOrder = async (item) => {
-  const { userId, orders } = this.state;
-  const existingItem = orders.find(el => el.id === item.id);
+    const { userId, orders } = this.state;
+    const existingItem = orders.find(el => el.id === item.id);
 
-  try {
-    if (existingItem) {
-      // Если товар уже в корзине - увеличиваем количество
-      await this.updateQuantity(existingItem.cartId, existingItem.count + 1);
-    } else {
-      if (userId) {
-        const response = await fetch('http://localhost:8000/api/cart', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
-          },
-          body: JSON.stringify({
-            id_user: userId,  // Совпадает с названием в бэкенде
-            id_item: item.id, // Совпадает с названием в бэкенде
-            count: 1
-          })
-        });
-
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.message || 'Failed to add item');
-        }
-
-        const newCartItem = await response.json();
-        
-        this.setState(prev => ({
-          orders: [...prev.orders, {
-            ...item,
-            cartId: newCartItem.id, // Используем ID из ответа сервера
-            count: 1
-          }]
-        }));
+    try {
+      if (existingItem) {
+        // Если товар уже в корзине - увеличиваем количество
+        await this.updateQuantity(existingItem.cartId, existingItem.count + 1);
       } else {
-        // Для неавторизованных пользователей
-        this.setState(prev => ({
-          orders: [...prev.orders, {
-            ...item,
-            cartId: Date.now(),
-            count: 1
-          }]
-        }));
+        if (userId) {
+          const response = await fetch('http://localhost:8000/api/cart', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+            },
+            body: JSON.stringify({
+              id_user: userId,
+              id_item: item.id,
+              count: 1
+            })
+          });
+
+          if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to add item');
+          }
+
+          const newCartItem = await response.json();
+          
+          this.setState(prev => ({
+            orders: [...prev.orders, {
+              ...item,
+              cartId: newCartItem.id,
+              count: 1
+            }]
+          }));
+        } else {
+          // Для неавторизованных пользователей
+          this.setState(prev => ({
+            orders: [...prev.orders, {
+              ...item,
+              cartId: Date.now(),
+              count: 1
+            }]
+          }));
+        }
       }
+    } catch (err) {
+      console.error('Ошибка при добавлении товара:', err);
+      alert(`Ошибка: ${err.message}`);
     }
-  } catch (err) {
-    console.error('Ошибка при добавлении товара:', err);
-    alert(`Ошибка: ${err.message}`);
   }
-}
 
   deleteOrder = (cartId) => {
     if (this.state.userId) {
@@ -178,6 +180,13 @@ class App extends React.Component {
     }
   }
 
+  handleSearch = (item) => {
+    this.setState({
+      currentItems: [item],
+      showFullItem: false
+    });
+  };
+
   render() {
     return (
       <div className="wrapper">
@@ -185,8 +194,10 @@ class App extends React.Component {
           orders={this.state.orders} 
           onDelete={this.deleteOrder}
           onUpdateQuantity={this.updateQuantity}
+          userId={this.state.userId}
         />
         <div className="presentation"></div>
+        <SearchBar onSearchSelect={(item) => this.setState({ currentItems: [item] })} />
         <Categories chooseCategories={this.chooseCategories} />
         <Items
           items={this.state.currentItems}
