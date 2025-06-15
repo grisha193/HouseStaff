@@ -41,6 +41,8 @@ const showNothing = () => {
 };
 
 export default function Header(props) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   let [cartOpen, setCartOpen] = useState(false);
   
   const handleOrderCreated = (order) => {
@@ -59,7 +61,17 @@ export default function Header(props) {
         <span className='logo'>
           <NavLink to="/">House Staff</NavLink>
         </span>
-        
+        <div className="burger" onClick={() => setMobileOpen(!mobileOpen)}>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+<div className={`mobile-nav ${mobileOpen ? 'active' : ''}`}>
+  <NavLink to="/about" onClick={() => setMobileOpen(false)}>Про нас</NavLink>
+  <NavLink to="/contacts" onClick={() => setMobileOpen(false)}>Контакты</NavLink>
+  <NavLink to="/profile" onClick={() => setMobileOpen(false)}>Кабинет</NavLink>
+</div>
+
         <ul className='nav'>
           <li><NavLink to="/about">Про нас</NavLink></li>
           <li><NavLink to="/contacts">Контакты</NavLink></li>

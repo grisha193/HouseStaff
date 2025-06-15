@@ -6,6 +6,16 @@ const SearchBar = ({ onSearchSelect }) => {
   const [notFound, setNotFound] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
 
+  const fetchSuggestions = (searchQuery) => {
+    const encodedQuery = encodeURI(searchQuery.trim());
+    return fetch(`http://localhost:8000/api/items/search?name=${encodedQuery}`)
+      .then(res => res.json())
+      .then(data => {
+        setSuggestions(data);
+        setNotFound(data.length === 0);
+      });
+  };
+
   useEffect(() => {
     if (query.trim() === '') {
       setSuggestions([]);
@@ -14,18 +24,13 @@ const SearchBar = ({ onSearchSelect }) => {
     }
 
     const delayDebounce = setTimeout(() => {
-      fetch(`http://localhost:8000/api/items/search?name=${encodeURIComponent(query)}`)
-        .then(res => res.json())
-        .then(data => {
-          setSuggestions(data);
-          setNotFound(data.length === 0);
-        })
+      fetchSuggestions(query)
         .catch(err => {
           console.error('Ошибка поиска:', err);
           setSuggestions([]);
           setNotFound(true);
         });
-    }, 300); // debounce
+    }, 300);
 
     return () => clearTimeout(delayDebounce);
   }, [query]);
@@ -38,23 +43,21 @@ const SearchBar = ({ onSearchSelect }) => {
     setQuery(item.name);
     setSuggestions([]);
     setNotFound(false);
-    onSearchSelect(item); // Вызываем callback для родителя
+    onSearchSelect(item);
   };
 
   const handleSearchClick = () => {
+    if (query.trim() === '') return;
+
     setIsSearching(true);
-    fetch(`http://localhost:8000/api/items/search?name=${encodeURIComponent(query)}`)
-      .then(res => res.json())
-      .then(data => {
-        setSuggestions(data);
-        setNotFound(data.length === 0);
-        setIsSearching(false);
-      })
-      .catch(err => {
-        console.error('Ошибка поиска:', err);
-        setIsSearching(false);
-        setNotFound(true);
-      });
+    fetchSuggestions(query)
+      .finally(() => setIsSearching(false));
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearchClick();
+    }
   };
 
   return (
@@ -64,11 +67,16 @@ const SearchBar = ({ onSearchSelect }) => {
           type="text"
           value={query}
           onChange={handleInputChange}
+          onKeyPress={handleKeyPress}
           placeholder="Поиск товаров..."
           style={{ flex: 1, padding: '8px' }}
         />
-        <button onClick={handleSearchClick} style={{ marginLeft: '8px', padding: '8px 12px' }}>
-          Поиск
+        <button 
+          onClick={handleSearchClick} 
+          disabled={isSearching}
+          style={{ marginLeft: '8px', padding: '8px 12px', border: '1px solid black'}}
+        >
+          {isSearching ? '...' : 'Поиск'}
         </button>
       </div>
 
@@ -83,13 +91,22 @@ const SearchBar = ({ onSearchSelect }) => {
           backgroundColor: '#fff',
           border: '1px solid #ccc',
           width: '100%',
-          zIndex: 10
+          zIndex: 10,
+          maxHeight: '300px',
+          overflowY: 'auto'
         }}>
           {suggestions.map(item => (
             <li
               key={item.id}
               onClick={() => handleSuggestionClick(item)}
-              style={{ padding: '8px', cursor: 'pointer', borderBottom: '1px solid #eee' }}
+              style={{ 
+                padding: '8px', 
+                cursor: 'pointer', 
+                borderBottom: '1px solid #eee',
+                ':hover': {
+                  backgroundColor: '#f5f5f5'
+                }
+              }}
             >
               {item.name}
             </li>

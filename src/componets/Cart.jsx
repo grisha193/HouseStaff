@@ -5,14 +5,13 @@ const Cart = ({ item, onDelete, onUpdateQuantity }) => {
   const totalPrice = parseFloat(item.price) * item.count;
   
   return (
-    <div className='item'>
+    <div className='item_cart'>
       <img
         src={`http://localhost:8000/img/products/${item.image}`}
         alt={item.name}
       />
       <div className="item-info">
         <h2>{item.name}</h2>
-        <p>{item.description}</p>
         <b>{totalPrice.toFixed(2)} руб.</b>
         <small>({item.price} руб. × {item.count} шт.)</small>
       </div>

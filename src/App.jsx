@@ -5,7 +5,7 @@ import ContactsPage from './Pages/ContactsPage';
 import LoginPage from './Pages/LoginPage';
 import RegistrationPage from './Pages/RegistrationPage';
 import ProfilePage from './Pages/ProfilePage';
-
+import ProductDetailPage from './Pages/ProductDetailPage';
 function App() {
     return (
         <Routes>
@@ -13,6 +13,7 @@ function App() {
             <Route path="/about" element={<AboutUsPage />} />
             <Route path="/contacts" element={<ContactsPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/items/:id" element={<ProductDetailPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/registration" element={<RegistrationPage />} />
         </Routes>

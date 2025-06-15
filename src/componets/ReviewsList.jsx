@@ -29,7 +29,6 @@ const ReviewsList = ({ itemId }) => {
 
   return (
     <div className="reviews-list">
-      <h3>Отзывы</h3>
       {reviews.length === 0 ? (
         <p>Пока нет отзывов. Будьте первым!</p>
       ) : (

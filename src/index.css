@@ -26,6 +26,7 @@ body{
 
 header{
     position: relative;
+    margin-top: 2%;
 }
 
 header ul.nav{
@@ -81,14 +82,14 @@ header ul.nav li:hover{
     margin-bottom: 20px;
  }
 
- header .shop-cart .item{
+ header .shop-cart .item_cart{
     width: 100%;
     float: left;
     margin-bottom: 20px;
 
  }
 
- header .shop-cart .item img{
+ header .shop-cart .item_cart img{
     width: 70px;
     float: left;
     margin-right: 20px;
@@ -96,27 +97,28 @@ header ul.nav li:hover{
 
  }
 
- header .shop-cart.item h2{
+ header .shop-cart.item_cart h2{
     font-size: 10px;
     margin-bottom: 10px;
 
  }
 
- header .shop-cart.item p{
+ header .shop-cart.item_cart p{
     color: #797979;
     font-weight: 400;
  }
 
- header .shop-cart .item .delete-icon{
+ header .shop-cart .item_cart .delete-icon{
     color: #ca5252;
     float: right;
     position: relative;
-    top: -25px;
+    top: -37px;
+    margin-right: 2%;
     cursor: pointer;
     transition: color 500ms ease;
  }
 
- header .shop-cart .item .delete-icon:hover{
+ header .shop-cart .item_cart .delete-icon:hover{
     color: #d81010;
     transform: scale(1.5);
  }
@@ -360,6 +362,7 @@ header .shop-cart .summa{
 /* поиск */
 .search-bar {
   margin: 20px auto;
+  margin-bottom: 120px;
   width: 80%;
   position: relative;
 }
@@ -368,6 +371,7 @@ header .shop-cart .summa{
   width: 100%;
   padding: 10px;
   font-size: 16px;
+
 }
 
 .suggestions {
@@ -400,6 +404,7 @@ header .shop-cart .summa{
     border-radius: 50px;
     padding: 10px 20px;
     margin-bottom: 25px;
+    margin-top: 25px;
     margin-right: 15px;
     cursor: pointer;
     border: 1px solid black;
@@ -441,6 +446,7 @@ main{
     width: 100%;
     flex-wrap: wrap;
     justify-content: space-between;
+     gap: 24px;
 }
 
 main .item{
@@ -809,24 +815,6 @@ content-list {
   font-weight: bold;
 }
 
-@media (max-width: 600px) {
-  .profile-container {
-    padding: 10px;
-  }
-
-  .profile-title {
-    font-size: 22px;
-  }
-
-  .section-title {
-    font-size: 18px;
-  }
-
-  .btn {
-    font-size: 13px;
-    padding: 6px 10px;
-  }
-}
 
 
 /* LoginPage */
@@ -1041,59 +1029,141 @@ content-list {
 
 
 
-
-
-
-/* Медиа-запросы для адаптивности */
-@media (max-width: 768px) {
-    .container {
-        padding: 15px;
-    }
-
-    .container h1 {
-        font-size: 20px;
-    }
-
-    .form-control input {
-        font-size: 14px;
-    }
-
-    .form-control label {
-        font-size: 14px;
-    }
-
-    .btn {
-        padding: 10px;
-        font-size: 14px;
-    }
+/* productdetail */
+.product-detail-wrapper {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  border-radius: 16px;
+  font-family: "Montserrat", sans-serif;
 }
 
-@media (max-width: 480px) {
-    .container {
-        padding: 10px;
-    }
-
-    .container h1 {
-        font-size: 18px;
-    }
-
-    .form-control input {
-        font-size: 12px;
-    }
-
-    .form-control label {
-        font-size: 12px;
-    }
-
-    .btn {
-        padding: 8px;
-        font-size: 12px;
-    }
+.product-main {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 60px;
+  align-items: flex-start;
 }
 
-/* footer */
-
-footer {
-    text-align: center;
-    top: 100px;
+.product-image-wrapper {
+  flex: 1;
+  min-width: 350px;
+  text-align: center;
 }
+
+.product-image {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 20px;
+  background-color: #f4f4f4;
+  border: 1px solid #ccc;
+}
+
+.product-info-panel {
+  flex: 1;
+  min-width: 300px;
+}
+
+.product-name {
+  font-size: 42px;
+  font-weight: 500;
+  margin-bottom: 20px;
+  color: #000;
+}
+
+.product-price {
+  font-size: 36px;
+  font-weight: bold;
+  color: #ca5252;
+  margin-bottom: 15px;
+}
+
+.product-rating {
+  font-size: 26px;
+  color: #f0c040;
+  margin-bottom: 25px;
+}
+
+.score {
+  color: #555;
+  font-size: 20px;
+  margin-left: 10px;
+}
+
+.product-details {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.product-details p {
+  margin: 6px 0;
+}
+
+.product-description {
+  font-size: 20px;
+  color: #222;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 30px;
+  border: 1px solid #ddd;
+}
+
+.btn-cart {
+  background-color: rgba(202, 82, 82, 0.6);
+  border: none;
+  padding: 16px 32px;
+  font-size: 22px;
+  font-family: "Montserrat", sans-serif;
+  border-radius: 20px;
+  color: #000;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-cart:hover {
+  background-color: rgba(202, 82, 82, 1);
+}
+
+.product-reviews {
+  margin-top: 60px;
+}
+
+.product-reviews h2 {
+  font-size: 40px;
+  margin-bottom: 20px;
+  color: #000;
+}
+
+/* Отзывы как блоки */
+.review-item {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  font-size: 18px;
+  border: 1px solid #ccc;
+  list-style-type:none;
+}
+
+.review-author {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.review-text {
+  margin: 10px 0;
+}
+
+.review-rating {
+  color: #f0c040;
+  font-size: 20px;
+}
+
+.review-date {
+  color: #888;
+  font-size: 14px;
+}
+
+

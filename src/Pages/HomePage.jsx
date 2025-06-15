@@ -3,9 +3,7 @@ import Header from "../componets/Header";
 import Footer from "../componets/Footer";
 import Items from "../componets/Items";
 import Categories from "../componets/Categories";
-import ShowFullItem from "../componets/ShowFullItem";
 import SearchBar from '../componets/SearchBar';
-
 import { useAuth } from "../auth/authContext";
 
 class App extends React.Component {
@@ -14,8 +12,6 @@ class App extends React.Component {
     this.state = {
       orders: [],
       currentItems: [],
-      showFullItem: false,
-      fullItem: {},
       userId: props.user?.id || null
     };
   }
@@ -33,16 +29,16 @@ class App extends React.Component {
         'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
       }
     })
-    .then(res => res.json())
-    .then(cartItems => {
-      const enrichedItems = cartItems.map(cartItem => ({
-        ...cartItem.item,
-        cartId: cartItem.id,
-        count: cartItem.count
-      }));
-      this.setState({ orders: enrichedItems });
-    })
-    .catch(err => console.error('Ошибка загрузки корзины:', err));
+      .then(res => res.json())
+      .then(cartItems => {
+        const enrichedItems = cartItems.map(cartItem => ({
+          ...cartItem.item,
+          cartId: cartItem.id,
+          count: cartItem.count
+        }));
+        this.setState({ orders: enrichedItems });
+      })
+      .catch(err => console.error('Ошибка загрузки корзины:', err));
   }
 
   loadItems = (categoryKey = 'all') => {
@@ -61,21 +57,14 @@ class App extends React.Component {
     this.loadItems(categoryKey);
   }
 
-  onShowItem = (item) => {
-      this.setState({ 
-        fullItem: item, 
-        showFullItem: !this.state.showFullItem 
-      });
-    }
-
   updateQuantity = async (cartId, newCount) => {
     if (newCount < 1) return;
 
     const { userId } = this.state;
-    
+
     try {
       this.setState(prev => ({
-        orders: prev.orders.map(item => 
+        orders: prev.orders.map(item =>
           item.cartId === cartId ? { ...item, count: newCount } : item
         )
       }));
@@ -97,11 +86,6 @@ class App extends React.Component {
       }
     } catch (err) {
       console.error('Ошибка:', err);
-      this.setState(prev => ({
-        orders: prev.orders.map(item => 
-          item.cartId === cartId ? { ...item, count: item.count } : item
-        )
-      }));
     }
   }
 
@@ -111,7 +95,6 @@ class App extends React.Component {
 
     try {
       if (existingItem) {
-        // Если товар уже в корзине - увеличиваем количество
         await this.updateQuantity(existingItem.cartId, existingItem.count + 1);
       } else {
         if (userId) {
@@ -134,7 +117,7 @@ class App extends React.Component {
           }
 
           const newCartItem = await response.json();
-          
+
           this.setState(prev => ({
             orders: [...prev.orders, {
               ...item,
@@ -143,7 +126,6 @@ class App extends React.Component {
             }]
           }));
         } else {
-          // Для неавторизованных пользователей
           this.setState(prev => ({
             orders: [...prev.orders, {
               ...item,
@@ -167,12 +149,12 @@ class App extends React.Component {
           'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
         }
       })
-      .then(() => {
-        this.setState(prev => ({
-          orders: prev.orders.filter(item => item.cartId !== cartId)
-        }));
-      })
-      .catch(err => console.error('Ошибка удаления:', err));
+        .then(() => {
+          this.setState(prev => ({
+            orders: prev.orders.filter(item => item.cartId !== cartId)
+          }));
+        })
+        .catch(err => console.error('Ошибка удаления:', err));
     } else {
       this.setState(prev => ({
         orders: prev.orders.filter(item => item.cartId !== cartId)
@@ -180,37 +162,22 @@ class App extends React.Component {
     }
   }
 
-  handleSearch = (item) => {
-    this.setState({
-      currentItems: [item],
-      showFullItem: false
-    });
-  };
-
   render() {
     return (
       <div className="wrapper">
-        <Header 
-          orders={this.state.orders} 
+        <Header
+          orders={this.state.orders}
           onDelete={this.deleteOrder}
           onUpdateQuantity={this.updateQuantity}
           userId={this.state.userId}
         />
         <div className="presentation"></div>
-        <SearchBar onSearchSelect={(item) => this.setState({ currentItems: [item] })} />
+        {/* <SearchBar onSearchSelect={(item) => this.setState({ currentItems: [item] })} /> */}
         <Categories chooseCategories={this.chooseCategories} />
         <Items
           items={this.state.currentItems}
           onAdd={this.addToOrder}
-          onShowItem={this.onShowItem}
         />
-        {this.state.showFullItem && (
-          <ShowFullItem
-            item={this.state.fullItem}
-            onAdd={this.addToOrder}
-            onShowItem={this.onShowItem}
-          />
-        )}
         <Footer />
       </div>
     );

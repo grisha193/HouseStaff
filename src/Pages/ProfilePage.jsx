@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../componets/Header';
 import ReviewForm from '../componets/ReviewForm';
 import ReviewsList from '../componets/ReviewsList';
+import Footer from '../componets/Footer';
 
 export default function ProfilePage() {
   const { user, loading, logout } = useAuth();
@@ -97,7 +98,7 @@ const handleOpenReviewForm = (item) => {
       <div className="profile-container">
         <div className="profile-header">
           <h1 className="profile-title">Личный кабинет</h1>
-          {user ? (
+          
             <button 
               onClick={() => {
                 if (window.confirm('Вы уверены, что хотите выйти?')) {
@@ -108,14 +109,9 @@ const handleOpenReviewForm = (item) => {
             >
               Выход
             </button>
-          ) : (
-            <button 
-              onClick={() => navigate('/login')}
-              className="btn login-btn"
-            >
-              Вход
-            </button>
-          )}
+     
+
+          
         </div>
 
         {user ? (
@@ -203,9 +199,6 @@ const handleOpenReviewForm = (item) => {
                             </button>
                           </div>
                         </div>
-
-                        {/* Список отзывов для конкретного товара */}
-                        <ReviewsList itemId={item.id} />
                       </div>
                     ))}
                     </div>
@@ -246,6 +239,7 @@ const handleOpenReviewForm = (item) => {
         </div>
       )}
       </div>
+      <Footer/>
     </div>
   );
 }
