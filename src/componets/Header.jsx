@@ -20,7 +20,6 @@ const showOrders = (props) => {
       ))}
       <p className='summa'>Сумма: {new Intl.NumberFormat().format(summa)} руб.</p>
       
-      {/* Показываем форму заказа если есть товары и пользователь авторизован */}
       {props.orders.length > 0 && props.userId && (
         <Order 
           userId={props.userId}

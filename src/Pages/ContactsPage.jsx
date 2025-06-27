@@ -7,7 +7,6 @@ import Footer from '../componets/Footer';
 export default function ContatsPage() {
   return (
     <div className="wrapper">
-      <Header/>
       <div className="centered">
         <h2 className="aboutUs_head">Контакты</h2>
         <div className="aboutUs_text">
@@ -31,6 +30,5 @@ export default function ContatsPage() {
         </div>
         <p className="s">House Staff – всё, что нужно для уюта и комфорта в вашем доме.!</p>
       </div>
-      <Footer/>
     </div>
 )}

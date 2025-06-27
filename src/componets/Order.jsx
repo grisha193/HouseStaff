@@ -35,10 +35,9 @@ const handleSubmit = async (e) => {
       items: cartItems.map(item => ({
         id_item: item.id,
         count: item.count,
-        price: parseFloat(item.price) // Добавляем цену товара
+        price: parseFloat(item.price) 
       }))
     });
-
     onOrderCreated(response.data);
     setAddress('');
     alert('Заказ успешно оформлен!');
@@ -52,7 +51,6 @@ const handleSubmit = async (e) => {
                       JSON.stringify(err.response.data?.errors) || 
                       errorMessage;
       } else if (err.request) {
-        // Запрос был сделан, но ответ не получен
         errorMessage = 'Сервер не ответил';
       }
 

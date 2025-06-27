@@ -12,7 +12,8 @@ class App extends React.Component {
     this.state = {
       orders: [],
       currentItems: [],
-      userId: props.user?.id || null
+      userId: props.user?.id || null,
+      selectedCategory: 'all'
     };
   }
 
@@ -54,8 +55,9 @@ class App extends React.Component {
   }
 
   chooseCategories = (categoryKey) => {
-    this.loadItems(categoryKey);
-  }
+  this.setState({ selectedCategory: categoryKey }); 
+  this.loadItems(categoryKey);
+};
 
   updateQuantity = async (cartId, newCount) => {
     if (newCount < 1) return;
@@ -165,20 +167,17 @@ class App extends React.Component {
   render() {
     return (
       <div className="wrapper">
-        <Header
-          orders={this.state.orders}
-          onDelete={this.deleteOrder}
-          onUpdateQuantity={this.updateQuantity}
-          userId={this.state.userId}
-        />
+       
         <div className="presentation"></div>
         {/* <SearchBar onSearchSelect={(item) => this.setState({ currentItems: [item] })} /> */}
         <Categories chooseCategories={this.chooseCategories} />
+       
         <Items
-          items={this.state.currentItems}
-          onAdd={this.addToOrder}
-        />
-        <Footer />
+        items={this.state.currentItems}
+        onAdd={this.addToOrder}
+        onShowItem={this.handleShowItem}
+        chooseCategories={this.state.selectedCategory} 
+      />
       </div>
     );
   }

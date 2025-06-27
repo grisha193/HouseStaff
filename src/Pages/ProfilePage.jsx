@@ -63,7 +63,7 @@ export default function ProfilePage() {
         phone_number: (form.phone_number || '').replace(/\D/g, '')
       });
       setEditMode(false);
-      fetchProfile();
+      fetchProfile();       
     } catch (error) {
       console.error('Ошибка при сохранении:', error);
       alert('Ошибка при сохранении данных: ' + (error.response?.data?.message || error.message));
@@ -87,14 +87,12 @@ const handleOpenReviewForm = (item) => {
   const handleReviewSubmit = () => {
     setShowReviewForm(false);
     setSelectedItem(null);
-    // Можно обновить список отзывов, если нужно
   };
 
   if (loading) return <div>Загрузка...</div>;
 
   return (
     <div className="wrapper">
-      <Header/>
       <div className="profile-container">
         <div className="profile-header">
           <h1 className="profile-title">Личный кабинет</h1>
@@ -232,14 +230,13 @@ const handleOpenReviewForm = (item) => {
             </button>
             <h3>Отзыв о товаре: {selectedItem?.name}</h3>
             <ReviewForm 
-              itemId={selectedItem?.id}  // ✅ из таблицы items
+              itemId={selectedItem?.id}  
               onReviewSubmit={handleReviewSubmit}
             />
           </div>
         </div>
       )}
       </div>
-      <Footer/>
     </div>
   );
 }

@@ -46,7 +46,6 @@ const ProductDetailPage = () => {
 
   return (
     <div className="wrapper">
-       <Header/>
     <div className="product-detail-wrapper">
       <div className="product-main">
         <div className="product-image-wrapper">
@@ -93,7 +92,6 @@ const ProductDetailPage = () => {
         <ReviewForm itemId={item.id} onReviewSubmit={() => window.location.reload()} />
       </div>
     </div>
-      <Footer/>
 
     </div>
   );

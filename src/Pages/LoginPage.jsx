@@ -25,12 +25,12 @@ export default function LoginPage() {
         setErrors({});
 
         try {
-            // 1. Получаем CSRF-куки
+            // Получаем CSRF-куки
             await axios.get('/sanctum/csrf-cookie', {
                 withCredentials: true,
             });
 
-            // 2. Отправляем запрос на вход
+            //  Отправляем запрос на вход
             const response = await axios.post(
                 '/api/login',
                 {
@@ -47,12 +47,12 @@ export default function LoginPage() {
                 }
             );
 
-            // 3. Проверяем ответ сервера
+            // Проверяем ответ сервера
             if (!response.data?.token) {
                 throw new Error('Server returned invalid data');
             }
 
-            // 4. Вызываем auth.login
+            //  Вызываем auth.login
             await auth.login(
                 {
                     id: response.data.user?.id,

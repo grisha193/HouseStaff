@@ -23,10 +23,6 @@ button, .btn {
   cursor: pointer;
 }
 
-button:hover, .btn:hover {
-  background-color: #b94444;
-}
-
 input, textarea {
   padding: 10px;
   border-radius: 6px;
